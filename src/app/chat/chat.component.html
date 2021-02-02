@@ -1,0 +1,9 @@
+<h1>Chat</h1>
+<br>
+<label>
+  Message:
+  <input type="text" [formControl]="message">
+</label>
+<button (click)="sendMessage()">Send Message</button>
+<br>
+<h3>{{message.value}}</h3>
