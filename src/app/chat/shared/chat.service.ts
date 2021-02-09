@@ -10,6 +10,7 @@ import {WelcomeDto} from './welcome.dto';
 })
 export class ChatService {
   chatClient: ChatClient | undefined;
+
   constructor(private socket: Socket) { }
 
   sendMessage(msg: string): void {
