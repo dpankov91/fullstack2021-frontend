@@ -1,9 +1,44 @@
-<h1>Chat</h1>
+<h1 style="text-align: center">Welcome to   Chat</h1>
 <br>
-<label>
-  Message:
-  <input type="text" [formControl]="message">
-</label>
-<button (click)="sendMessage()">Send Message</button>
-<br>
-<h3>{{message.value}}</h3>
+<section>
+  <div class="container">
+<div class="row">
+  <div class="col-md-6" >
+    <div  *ngIf=nickname>
+      <h2>Hi, {{nickname}}</h2>
+      <label>
+      Message:
+      <input type="text" [formControl]="message">
+      </label>
+      <button (click)="sendMessage()">Send Message</button>
+    </div>
+      <div *ngIf=!nickname>
+        <label>
+        Your Name:
+        <input type="text" [formControl]="nameFC">
+        </label>
+        <button (click)="confirmName()">OK</button>
+      </div>
+    <br>
+
+      <div *ngIf="clients$ | async as clients">
+        <h3>Users online: </h3>
+          <ul>
+          <li *ngFor="let client of clients">
+            {{client.nickname}}
+          </li>
+          </ul>
+        </div>
+  </div>
+
+    <div class="col-md-6" style="border: green 5px solid">
+      <h3 style="text-align: center">Messages:</h3>
+      <h4 *ngFor = "let message of messages">
+        {{message}}
+      </h4>
+    </div>
+
+    </div>
+  </div>
+</section>
+
