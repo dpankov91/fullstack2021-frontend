@@ -14,29 +14,21 @@ import {ChatMessage} from './shared/chat-message.model';
 export class ChatComponent implements OnInit, OnDestroy {
   message = new FormControl('');
   messages: ChatMessage[] = [];
-  unsubscriber$ = new Subject();
+  unsubscribe$ = new Subject();
   nameFC = new FormControl('');
-  nickname: string | undefined;
   clients$: Observable<ChatClient[]> | undefined;
+  chatClient: ChatClient | undefined;
   constructor(private chatService: ChatService) { }
 
   ngOnInit(): void {
     this.clients$ = this.chatService.listenForClients();
     this.chatService.listenForMessages()
       .pipe(
-        takeUntil(this.unsubscriber$)
+        takeUntil(this.unsubscribe$)
       )
       .subscribe(message => {
         console.log('Helloo Maafakaz');
         this.messages.push(message);
-      });
-    this.chatService.getAllMessages()
-      .pipe(
-        take(1)
-      )
-      .subscribe(messages => {
-        console.log('getAll');
-        this.messages = messages;
       });
 
   }
@@ -48,14 +40,21 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   confirmName(): void {
     if (this.nameFC.value) {
-      this.nickname = this.nameFC.value;
+      this.chatService.listenForWelcome().
+        pipe(
+          takeUntil(this.unsubscribe$)
+      )
+        .subscribe(welcome => {
+          this.messages = welcome.messages;
+          this.chatClient = welcome.client;
+        });
       this.chatService.confirmName(this.nameFC.value);
     }
   }
 
     ngOnDestroy(): void {
     console.log('Destroyed');
-    this.unsubscriber$.next();
-    this.unsubscriber$.complete();
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }
