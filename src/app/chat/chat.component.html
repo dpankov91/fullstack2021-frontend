@@ -33,8 +33,8 @@
 
     <div class="col-md-6" style="border: green 5px solid">
       <h3 style="text-align: center">Messages:</h3>
-      <h4 *ngFor = "let message of messages">
-        {{message}}
+      <h4 *ngFor = "let chatMessage of messages">
+        {{chatMessage.sender.nickname}}{{chatMessage.message}}
       </h4>
     </div>
 
