@@ -32,12 +32,26 @@ export class ChatService {
       .fromEvent<WelcomeDto>('welcome');
   }
 
+  listenForErrors(): Observable<string>{
+    return this.socket
+      .fromEvent<string>('error');
+  }
+
+  listenForClientTyping(): Observable<ChatClient>{
+    return this.socket
+      .fromEvent<ChatClient>('clientTyping');
+  }
+
   getAllMessages(): Observable<ChatMessage[]>{
     return this.socket
       .fromEvent<ChatMessage[]>('allMessages');
   }
 
-  confirmName(nickname: string): void {
+  sendName(nickname: string): void {
     this.socket.emit('nickname', nickname);
+  }
+
+  sendTyping(isTyping: boolean): void {
+      this.socket.emit('typing', isTyping);
   }
 }
