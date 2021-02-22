@@ -1,8 +1,5 @@
 <h1 style="text-align: center">Welcome to   Chat</h1>
 <br>
-<div *ngIf="errors$ | async as error ">
-  <h4 style="color: red">{{error}}</h4>
-</div>
 <section>
   <div class="container">
 <div class="row">
@@ -16,6 +13,9 @@
       <button (click)="sendMessage()">Send Message</button>
     </div>
       <div *ngIf=!chatClient>
+        <div *ngIf="errors$ | async as error ">
+          <h4 style="color: red">{{error}}</h4>
+        </div>
         <label>
         Your Name:
         <input type="text" [formControl]="nameFC">
@@ -25,7 +25,7 @@
     <br>
 
       <div *ngIf="clients$ | async as clients">
-        <h3>Users online: </h3>
+        <h3>Currently online: </h3>
           <ul>
           <li *ngFor="let client of clients">
             {{client.nickname}}
