@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Akaya+Telivigala&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@1,300&display=swap');
+
+.welcometext{
+    font-family: Akaya;
+}
+
+.errortext{
+  color: red;
+  font-size: 17px;
+  font-family: Roboto;
+}
+
+.headers{
+  text-align: center;
+  font-family: Akaya;
+}
+
+.chatheaderborder{
+  border: slategrey 2px solid;
+}
+
+.chatbodyboarder{
+  border: slategrey 1px solid;
+}
