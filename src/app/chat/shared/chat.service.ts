@@ -4,6 +4,7 @@ import {Socket} from 'ngx-socket-io';
 import {ChatClient} from './chat-client.model';
 import {ChatMessage} from './chat-message.model';
 import {WelcomeDto} from './welcome.dto';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +14,6 @@ export class ChatService {
 
   constructor(private socket: Socket) { }
 
-  sendMessage(msg: string): void {
-    this.socket.emit('message', msg);
-  }
 
   listenForMessages(): Observable<ChatMessage>{
     return this.socket
@@ -51,7 +49,32 @@ export class ChatService {
     this.socket.emit('nickname', nickname);
   }
 
+  sendMessage(msg: string): void {
+    this.socket.emit('message', msg);
+  }
+
   sendTyping(isTyping: boolean): void {
       this.socket.emit('typing', isTyping);
   }
+
+  listenForConnect(): Observable<string>{
+    return this.socket
+      .fromEvent<string>('connect')
+      .pipe(
+        map(() => {
+          return this.socket.ioSocket.id;
+        })
+      );
+  }
+
+  listenForDisconnect(): Observable<string>{
+    return this.socket
+      .fromEvent<string>('disconnect')
+      .pipe(
+        map(() => {
+          return this.socket.ioSocket.id;
+        })
+      );
+  }
+
 }

@@ -1,8 +1,9 @@
 <div class="container-fluid">
   <div class="row" style="position: absolute">
     <div>
-    <a routerLink="/">Home</a> -
-    <a routerLink="/chats">Chat</a>
+      <app-navbar></app-navbar>
+<!--<a routerLink="/">Home</a> -
+    <a routerLink="/chats">Chat</a>-->
       <div *ngIf="clients$ | async as clients">
         <span>Users online: {{clients.length}}</span>
       </div>

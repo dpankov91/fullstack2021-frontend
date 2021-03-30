@@ -1,0 +1,49 @@
+<div class="container">
+  <div class="row vh-100" style="padding-top: 60px; padding-bottom: 20px">
+
+    <div class="col-5">
+      <div class="card h-100 border">
+        <div class="card-header ">
+          <h4 class="headers">Stocks</h4>
+        </div>
+        <div class="card-body ">
+          <div *ngIf="stocks$ | async as stocks">
+
+            <ul>
+              <li *ngFor="let stock of stocks">
+                {{stock.name}}: {{stock.price}}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+<div class="col-7" >
+  <div class="card h-100 border" >
+    <div class="card-header chatbodyboarder">
+      <h4 class="headers">Selected Stock</h4>
+    </div>
+    <div class="card-body selStockDiv">
+      <h2>Apple Stock</h2>
+      <br>
+      <h4>Stock by apple company. Office located in San-Francisco. </h4>
+      <br>
+      <br>
+      <br>
+      <div class="input-group mb-3 input-price">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">$</span>
+        </div>
+        <input type="text" class="form-control"  placeholder="Price" aria-label="Price" aria-describedby="basic-addon1">
+      </div>
+      <div class="upd-del-btn">
+      <button type="button" class="btn btn-info btn-upd">Update</button>
+      <button type="button" class="btn btn-secondary btn-del">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+</div>

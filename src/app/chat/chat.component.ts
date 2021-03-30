@@ -5,6 +5,7 @@ import {debounceTime, take, takeUntil} from 'rxjs/operators';
 import {Observable, Subject} from 'rxjs';
 import {ChatClient} from './shared/chat-client.model';
 import {ChatMessage} from './shared/chat-message.model';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-chat',
@@ -20,11 +21,45 @@ export class ChatComponent implements OnInit, OnDestroy {
   clients$: Observable<ChatClient[]> | undefined;
   chatClient: ChatClient | undefined;
   errors$: Observable<string> | undefined;
-  constructor(private chatService: ChatService) { }
+  myDate = new Date();
+  monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'];
+  socketId: string | undefined;
+
+  constructor(private chatService: ChatService, public datepipe: DatePipe) { }
 
   ngOnInit(): void {
     this.clients$ = this.chatService.listenForClients();
     this.errors$ = this.chatService.listenForErrors();
+    this.handleSendTyping();
+    this.handleListenForMessages();
+    this.handleListenForWelcomeDTO();
+    this.handleListenForTyping();
+    this.handleSendNickname();
+    this.handleListenForConnect();
+    this.handleListenForDisonnect();
+  }
+
+  handleListenForTyping(): void{
+    this.chatService.listenForClientTyping()
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe( (chatClient) => {
+        if (chatClient.isTyping && !this.clientsTyping.find((c) => chatClient.id === c.id )){
+          this.clientsTyping.push(chatClient);
+        } else {
+          this.clientsTyping = this.clientsTyping.filter((c) => c.id !== chatClient.id);
+        }});
+  }
+
+  handleSendNickname(): void{
+    if (this.chatService.chatClient) {
+      this.chatService.sendName(this.chatService.chatClient.nickname );
+    }
+  }
+
+  handleSendTyping(): void{
     this.messageFc.valueChanges
       .pipe(
         takeUntil(this.unsubscribe$),
@@ -33,35 +68,28 @@ export class ChatComponent implements OnInit, OnDestroy {
       .subscribe((value) => {
         this.chatService.sendTyping(value.length > 0);
       });
-    this.chatService.listenForMessages()
+  }
+
+  handleListenForConnect(): void {
+    this.chatService.listenForConnect()
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(message => {
-        this.messages.push(message);
+      .subscribe((id) => {
+        this.socketId = id;
+        console.log('id', id);
       });
-    this.chatService.listenForWelcome().
-    pipe(
-      takeUntil(this.unsubscribe$)
-    )
-      .subscribe(welcome => {
-        this.messages = welcome.messages;
-        this.chatClient = this.chatService.chatClient = welcome.client;
-      });
-    this.chatService.listenForClientTyping()
+  }
+
+  handleListenForDisonnect(): void{
+    this.chatService.listenForDisconnect()
       .pipe(
         takeUntil(this.unsubscribe$)
-    )
-      .subscribe( (chatClient) => {
-        if (chatClient.isTyping && !this.clientsTyping.find((c) => chatClient.id === c.id )){
-          this.clientsTyping.push(chatClient);
-        } else {
-          this.clientsTyping = this.clientsTyping.filter((c) => c.id !== chatClient.id);
-        }});
-    if (this.chatService.chatClient) {
-      this.chatService.sendName(this.chatService.chatClient.nickname );
-    }
-
+      )
+      .subscribe((id) => {
+        this.socketId = id;
+        console.log('disconnect id', id);
+      });
   }
 
   ngOnDestroy(): void {
@@ -71,7 +99,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   sendMessage(): void {
-    console.log(this.messageFc.value);
+    console.log(this.messageFc.value + 'frontend');
     this.chatService.sendMessage(this.messageFc.value);
     this.messageFc.patchValue('');
   }
@@ -82,4 +110,31 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
+  getTime(): any{
+    const latestDate = this.datepipe.transform(this.myDate, 'dd')
+                          + ' ' + this.monthNames[this.myDate.getMonth()]
+                          + ' ' + this.datepipe.transform(this.myDate, 'yyyy' );
+    return latestDate;
+  }
+
+  handleListenForMessages(): void{
+    this.chatService.listenForMessages()
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(message => {
+        this.messages.push(message);
+      });
+  }
+
+  handleListenForWelcomeDTO(): void{
+    this.chatService.listenForWelcome().
+    pipe(
+      takeUntil(this.unsubscribe$)
+    )
+      .subscribe(welcome => {
+        this.messages = welcome.messages;
+        this.chatClient = this.chatService.chatClient = welcome.client;
+      });
+  }
 }
