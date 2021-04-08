@@ -8,7 +8,6 @@
         </div>
         <div class="card-body ">
           <div *ngIf="stocks$ | async as stocks">
-
             <ul>
               <li *ngFor="let stock of stocks">
                 {{stock.name}}: {{stock.price}}

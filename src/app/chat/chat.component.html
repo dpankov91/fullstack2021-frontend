@@ -1,5 +1,14 @@
+<!--<div *ngIf="socketId">
+  {{socketId}}
+</div>
+<div class="" *ngIf="!socketId">
+  You are disconnected
+</div>-->
 <div class="row justify-content-center align-items-center vh-100" *ngIf=!chatClient>
 <div class="card align-items-center" style="width: 500px">
+  <div class="" *ngIf="!chatClient">
+    You are disconnected
+  </div>
   <div class="card-body">
     <h2 class="welcometext">Welcome to the Chat</h2>
     <br>
@@ -29,7 +38,6 @@
           </div>
           <div class="card-body chatbodyboarder">
           <div *ngIf="clients$ | async as clients">
-
             <ul>
               <li *ngFor="let client of clients" class="onlineusers">
                 {{client.nickname}}

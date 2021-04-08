@@ -6,6 +6,7 @@ import {Observable, Subject} from 'rxjs';
 import {ChatClient} from './shared/chat-client.model';
 import {ChatMessage} from './shared/chat-message.model';
 import {DatePipe} from '@angular/common';
+import {LoginService} from '../shared/login.service';
 
 @Component({
   selector: 'app-chat',
@@ -26,18 +27,19 @@ export class ChatComponent implements OnInit, OnDestroy {
     'July', 'August', 'September', 'October', 'November', 'December'];
   socketId: string | undefined;
 
-  constructor(private chatService: ChatService, public datepipe: DatePipe) { }
+  constructor(private chatService: ChatService, public datepipe: DatePipe, private loginService: LoginService) { }
 
   ngOnInit(): void {
     this.clients$ = this.chatService.listenForClients();
+    console.log('get clients frontend' + this.clients$);
     this.errors$ = this.chatService.listenForErrors();
     this.handleSendTyping();
     this.handleListenForMessages();
     this.handleListenForWelcomeDTO();
     this.handleListenForTyping();
-    this.handleSendNickname();
+    // this.handleSendNickname();
     this.handleListenForConnect();
-    this.handleListenForDisonnect();
+    this.handleListenForDisconnect ();
   }
 
   handleListenForTyping(): void{
@@ -76,12 +78,16 @@ export class ChatComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((id) => {
+        const cid = this.loginService.getClientId();
+        if (this.loginService.getClientId()){
+          this.chatService.connectClient(cid);
+        }
         this.socketId = id;
         console.log('id', id);
       });
   }
 
-  handleListenForDisonnect(): void{
+  handleListenForDisconnect(): void{
     this.chatService.listenForDisconnect()
       .pipe(
         takeUntil(this.unsubscribe$)
@@ -135,6 +141,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       .subscribe(welcome => {
         this.messages = welcome.messages;
         this.chatClient = this.chatService.chatClient = welcome.client;
+        this.loginService.saveClientId(this.chatClient.id);
       });
   }
 }

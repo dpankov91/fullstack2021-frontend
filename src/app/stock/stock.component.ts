@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {Observable} from 'rxjs';
-import {ChatClient} from '../chat/shared/chat-client.model';
-import {ChatService} from '../chat/shared/chat.service';
 import {StockService} from './shared/stock.service';
 import {StockModel} from './shared/stock.model';
 
@@ -16,7 +14,7 @@ export class StockComponent implements OnInit {
 
   ngOnInit(): void {
     this.stocks$ = this.stockService.listenForStocks();
-    console.log(this.stocks$);
+    console.log('get stocks frontend' + ' ' + this.stocks$);
   }
 
 }
