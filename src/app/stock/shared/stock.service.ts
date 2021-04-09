@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import {Socket} from 'ngx-socket-io';
 import {Observable} from 'rxjs';
-import {ChatClient} from '../../chat/shared/chat-client.model';
 import {StockModel} from './stock.model';
 import {SocketStock} from '../../app.module';
+import {UpdatePriceDto} from './dtos/update-price.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +16,24 @@ export class StockService {
       .fromEvent<StockModel[]>('allStocks');
   }
 
+  getStocks(): void {
+    console.log('stocks');
+    this.socket.emit('allStocks', null);
+  }
+
+  listenForErrors(): Observable<string>{
+    return this.socket
+      .fromEvent<string>('error');
+  }
+
+  deleteStock(id: string): void {
+    this.socket.emit('deleteStock', id);
+  }
+
+  updatePrice(dto: UpdatePriceDto): void {
+    this.socket.emit('updatePrice', dto);
+  }
+
   disconnect(): void{
     this.socket.disconnect();
   }
@@ -24,4 +41,6 @@ export class StockService {
   connect(): void{
     this.socket.connect();
   }
+
+
 }

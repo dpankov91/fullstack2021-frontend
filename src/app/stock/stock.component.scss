@@ -3,6 +3,26 @@
   position: relative;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+#stockName{
+  font-size: 45px;
+  font-family: 'Rubik', sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=PT+Serif&display=swap');
+#stockDescription{
+  font-family: 'PT Serif', serif;
+}
+
+.addStockBtn{
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+}
+
+.btn-holder {
+}
+
 .upd-del-btn{
   position: absolute;
   bottom: 50px;
@@ -23,4 +43,24 @@
 .border{
   border-style: groove;
   border-color: #17A2B6;
+}
+
+.headers{
+  text-align: center;
+  font-size: 30px;
+  font-family: null;
+}
+
+.stockList{
+  font-size: 25px;
+  cursor: pointer;
+  font-family: null;
+  margin: 7px;
+  text-align: center;
+  list-style-type: none;
+}
+
+.stockList:hover{
+  background-color: #F6F3F0;
+  border: gray 1px solid;
 }
