@@ -6,6 +6,9 @@ import {Socket, SocketIoModule} from 'ngx-socket-io';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {DatePipe} from '@angular/common';
 import { NavbarComponent } from './shared/navbar/navbar.component';
+import {NgxsModule} from '@ngxs/store';
+import {environment} from '../environments/environment';
+import {StockState} from './stock/state/stock.state';
 
 @Injectable()
 export class SocketChat extends Socket{
@@ -30,7 +33,10 @@ export class SocketStock extends Socket{
     BrowserModule,
     AppRoutingModule,
     SocketIoModule,
-    NgbModule
+    NgbModule,
+    NgxsModule.forRoot([StockState], {
+      developmentMode: !environment.production
+    })
   ],
   providers: [DatePipe, SocketChat, SocketStock],
   bootstrap: [AppComponent]

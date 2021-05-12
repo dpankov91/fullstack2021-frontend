@@ -24,7 +24,7 @@
       <h4 class="headers">Selected Stock</h4>
     </div>
     <div class="card-body selStockDiv" *ngIf="selectedStock">
-      <h2 id="stockName">{{selectedStock.name}}</h2>
+      <h2 id="stockName">{{selectedStock?.name}}</h2>
       <br>
       <h4 id="stockDescription">{{selectedStock.description}}</h4>
       <br>

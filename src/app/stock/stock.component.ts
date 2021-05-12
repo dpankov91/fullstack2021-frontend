@@ -5,6 +5,9 @@ import {StockModel} from './shared/stock.model';
 import {takeUntil} from 'rxjs/operators';
 import {FormControl} from '@angular/forms';
 import {UpdatePriceDto} from './shared/dtos/update-price.dto';
+import {Select, Store} from '@ngxs/store';
+import {StockState} from './state/stock.state';
+import {ListenForStocks} from './state/state.actions';
 
 @Component({
   selector: 'app-stock',
@@ -12,15 +15,18 @@ import {UpdatePriceDto} from './shared/dtos/update-price.dto';
   styleUrls: ['./stock.component.scss']
 })
 export class StockComponent implements OnInit {
+  @Select(StockState.stocks)
   stocks$: Observable<StockModel[]> | undefined;
   unsubscribe$ = new Subject();
   selectedStock: StockModel | undefined;
   priceFC = new FormControl('');
   error$: Observable<string> | undefined;
-  constructor(private stockService: StockService) { }
+  constructor(private stockService: StockService,
+              private store: Store) {}
 
   ngOnInit(): void {
     this.error$ = this.stockService.listenForErrors();
+    this.store.dispatch(new ListenForStocks());
     this.stockService.getStocks();
     this.stocks$ = this.stockService.listenForStocks();
     console.log('get stocks frontend' + ' ' + this.stocks$);
